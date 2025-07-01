@@ -40,7 +40,7 @@ export default function AddRecipeForm() {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const backendURL = "https://your-backend-api.com/api/recipes"; // Потім треба змінити на робочий
+  const backendURL = "https://your-backend-api.com/api/recipes"; // Замінити на робочий URL
 
   useEffect(() => {
     if (!photo) {
@@ -104,7 +104,6 @@ export default function AddRecipeForm() {
         <div className={styles.left}>
           <h1 className={styles.addRecipeTitle}>Add Recipe</h1>
           <p className={styles.generalInformation}>General Information</p>
-         
 
           <div className={styles.fieldGroup}>
             <label htmlFor="title" className={styles.recipeTitleLabel}>
@@ -114,6 +113,7 @@ export default function AddRecipeForm() {
               id="title"
               name="title"
               type="text"
+              placeholder="Enter the name of your recipe"
               className={styles.input}
               value={formik.values.title}
               onChange={formik.handleChange}
@@ -131,6 +131,7 @@ export default function AddRecipeForm() {
             <textarea
               id="shortDescription"
               name="shortDescription"
+              placeholder="Enter a brief description of your recipe"
               className={styles.textarea}
               value={formik.values.shortDescription}
               onChange={formik.handleChange}
@@ -141,8 +142,8 @@ export default function AddRecipeForm() {
             )}
           </div>
 
-          <div className={styles.inlineFieldsContainer}>
-            <div className={styles.inlineField}>
+          <div className={styles.cookingTimeWrapper}>
+            <div className={styles.fieldGroup}>
               <label htmlFor="cookingTime" className={styles.label}>
                 Cooking time in minutes
               </label>
@@ -160,50 +161,59 @@ export default function AddRecipeForm() {
               )}
             </div>
 
-            <div className={styles.inlineField}>
-              <label htmlFor="calories" className={styles.label}>
-                Calories
-              </label>
-              <input
-                id="calories"
-                name="calories"
-                type="number"
-                placeholder="Optional"
-                className={styles.input}
-                value={formik.values.calories}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-              {formik.touched.calories && formik.errors.calories && (
-                <div className={styles.error}>{formik.errors.calories}</div>
-              )}
-            </div>
+            <div className={styles.caloriesCategoryRow}>
+              <div className={styles.fieldGroup}>
+                <label htmlFor="calories" className={styles.label}>
+                  Calories
+                </label>
+                <input
+                  id="calories"
+                  name="calories"
+                  type="number"
+                  placeholder="Optional"
+                  className={styles.input}
+                  value={formik.values.calories}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.touched.calories && formik.errors.calories && (
+                  <div className={styles.error}>{formik.errors.calories}</div>
+                )}
+              </div>
 
-            <div className={styles.inlineField}>
-              <label htmlFor="category" className={styles.label}>
-                Category
-              </label>
-              <select
-                id="category"
-                name="category"
-                className={styles.select}
-                value={formik.values.category}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              >
-                <option value="">Select</option>
-                <option value="Soup">Soup</option>
-                <option value="Salad">Salad</option>
-                <option value="Dessert">Dessert</option>
-              </select>
-              {formik.touched.category && formik.errors.category && (
-                <div className={styles.error}>{formik.errors.category}</div>
-              )}
+              <div className={styles.fieldGroup}>
+                <label htmlFor="category" className={styles.label}>
+                  Category
+                </label>
+                <select
+                  id="category"
+                  name="category"
+                  className={styles.select}
+                  value={formik.values.category}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="">Select</option>
+                  <option value="Soup">Soup</option>
+                  <option value="Salad">Salad</option>
+                  <option value="Dessert">Dessert</option>
+                </select>
+                {formik.touched.category && formik.errors.category && (
+                  <div className={styles.error}>{formik.errors.category}</div>
+                )}
+              </div>
             </div>
           </div>
 
           <div className={styles.ingredients}>
             <label className={styles.label}>Ingredients</label>
+
+            <div className={styles.ingredientsLabelsRow}>
+              <span className={styles.labelName}>Name</span>
+              <span className={styles.labelAmount}>Amount</span>
+              <span style={{ width: "20px" }}></span> {/* Місце під кнопку видалення */}
+            </div>
+
             <FieldArray
               name="ingredients"
               render={(arrayHelpers) => (
@@ -214,14 +224,16 @@ export default function AddRecipeForm() {
                         name={`ingredients.${index}.name`}
                         value={item.name}
                         onChange={formik.handleChange}
-                        className={styles.input}
+                        onBlur={formik.handleBlur}
+                        className={styles.ingredientNameInput}
                         placeholder="Name"
                       />
                       <input
                         name={`ingredients.${index}.amount`}
                         value={item.amount}
                         onChange={formik.handleChange}
-                        className={styles.input}
+                        onBlur={formik.handleBlur}
+                        className={styles.ingredientAmountInput}
                         placeholder="Amount"
                       />
                       <button
@@ -244,29 +256,31 @@ export default function AddRecipeForm() {
                       placeholder="New ingredient name"
                       className={styles.input}
                     />
-                    <input
-                      value={formik.values.newIngredientAmount}
-                      onChange={(e) =>
-                        formik.setFieldValue("newIngredientAmount", e.target.value)
-                      }
-                      placeholder="New ingredient amount"
-                      className={styles.input}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const name = formik.values.newIngredientName.trim();
-                        const amount = formik.values.newIngredientAmount.trim();
-                        if (name && amount) {
-                          arrayHelpers.push({ name, amount });
-                          formik.setFieldValue("newIngredientName", "");
-                          formik.setFieldValue("newIngredientAmount", "");
+                    <div className={styles.amountAndButton}>
+                      <input
+                        value={formik.values.newIngredientAmount}
+                        onChange={(e) =>
+                          formik.setFieldValue("newIngredientAmount", e.target.value)
                         }
-                      }}
-                      className={styles.addIngredientBtn}
-                    >
-                      Add Ingredient
-                    </button>
+                        placeholder="New ingredient amount"
+                        className={styles.input}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const name = formik.values.newIngredientName.trim();
+                          const amount = formik.values.newIngredientAmount.trim();
+                          if (name && amount) {
+                            arrayHelpers.push({ name, amount });
+                            formik.setFieldValue("newIngredientName", "");
+                            formik.setFieldValue("newIngredientAmount", "");
+                          }
+                        }}
+                        className={styles.addIngredientBtn}
+                      >
+                        Add new Ingredient
+                      </button>
+                    </div>
                   </div>
                 </>
               )}
@@ -296,7 +310,7 @@ export default function AddRecipeForm() {
           <button
             type="submit"
             disabled={loading}
-            className={styles.submitBtn}
+            className={styles.publishRecipeBtn}
           >
             {loading ? "Submitting..." : "Publish Recipe"}
           </button>
@@ -306,7 +320,8 @@ export default function AddRecipeForm() {
         <div className={styles.uploadContainer}>
           <label htmlFor="photoInput" className={styles.photoLabel}>
             Upload photo
-            {/* <div className={styles.photoBox}>
+
+            <div className={styles.photoBox}>
               {photoPreview ? (
                 <img
                   src={photoPreview}
@@ -314,30 +329,21 @@ export default function AddRecipeForm() {
                   className={styles.previewImage}
                 />
               ) : (
-                <span className={styles.photoPlaceholder}>
-                  Click to upload
-                </span>
+                <>
+                  <svg
+                    className={styles.uploadIcon}
+                    aria-hidden="true"
+                    width="161.79"
+                    height="136"
+                    style={{ position: "absolute", top: 119, left: 114.6 }}
+                    role="img"
+                  >
+                    <use xlinkHref="#icon-photo" />
+                  </svg>
+                  <span className={styles.photoPlaceholder}>Click to upload</span>
+                </>
               )}
-            </div> */}
-            <div className={styles.photoBox}>
-  {photoPreview ? (
-    <img src={photoPreview} alt="Preview" className={styles.previewImage} />
-  ) : (
-    <>
-      <svg
-        className={styles.uploadIcon}
-        aria-hidden="true"
-        width="161.79"
-        height="136"
-        style={{ position: "absolute", top: 119, left: 114.6 }}
-        role="img"
-      >
-        <use xlinkHref="#icon-photo" />
-      </svg>
-      <span className={styles.photoPlaceholder}>Click to upload</span>
-    </>
-  )}
-</div>
+            </div>
           </label>
           <input
             id="photoInput"
@@ -351,6 +357,9 @@ export default function AddRecipeForm() {
     </div>
   );
 }
+
+
+
 
 
 

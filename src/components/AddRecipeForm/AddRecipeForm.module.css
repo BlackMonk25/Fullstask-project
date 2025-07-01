@@ -70,6 +70,74 @@ main {
   margin-top: 32px;
 }
 
+.cookingTimeWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 785px; /* або потрібна ширина */
+}
+
+.caloriesCategoryRow {
+  display: flex;
+  gap: 24px;
+  justify-content: flex-start;
+}
+
+.newIngredientInputs {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  align-items: flex-start;
+}
+
+.newIngredientInputs > input:first-child {
+  flex: 2;
+}
+
+.amountAndButton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.amountAndButton input {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.addIngredientBtn {
+  padding: 8px 16px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.addIngredientBtn:hover {
+  background-color: #0056b3;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* щоб Calories і Category зайняли рівний простір */
+}
+
+.input,
+.select {
+  width: 100%;
+  /* інші стилі input/select */
+}
+
 .fieldGroup {
   display: flex;
   flex-direction: column;
@@ -130,14 +198,38 @@ main {
   margin-top: 8px;
 }
 .addIngredientBtn {
-  background-color: #2e7d32;
+  width: 258px;
+  height: 23px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(
+    --gap-1,
+    8px
+  ); /* Якщо у тебе є змінна gap/1, підстав сюди її значення */
+  border-radius: var(
+    --radius-i-sm,
+    6px
+  ); /* Припустимо радіус 6px, заміни на свій */
+  padding: 4px 8px;
+  background: var(--Light-brown, #9b6c43);
   color: white;
-  padding: 8px 16px;
+  font-family: Montserrat, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
-  font-weight: 600;
-  height: 46px;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.addIngredientBtn:hover {
+  background: #7e5330; /* Темніший відтінок для ховера, якщо хочеш */
+}
+
+.addIngredientBtn:active {
+  background: #664220; /* Ще темніший при натисканні */
 }
 .submitBtn {
   margin-top: 24px;
@@ -187,7 +279,7 @@ main {
 
 .photoPlaceholder {
   position: absolute;
-  top: 260px; /* можна підкоригувати */
+  top: 260px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 16px;
