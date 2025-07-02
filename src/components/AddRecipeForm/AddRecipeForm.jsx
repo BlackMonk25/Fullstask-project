@@ -1,8 +1,22 @@
+
 import { useState, useEffect } from "react";
 import { useFormik, FieldArray } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import styles from "./AddRecipeForm.module.css";
+
+const availableIngredients = [
+  "Sugar",
+  "Salt",
+  "Flour",
+  "Milk",
+  "Butter",
+  "Eggs",
+  "Oil",
+  "Pepper",
+  "Garlic",
+ 
+];
 
 const initialValues = {
   title: "",
@@ -40,7 +54,7 @@ export default function AddRecipeForm() {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const backendURL = "https://your-backend-api.com/api/recipes"; // Замінити на робочий URL
+  const backendURL = "https://your-backend-api.com/api/recipes"; 
 
   useEffect(() => {
     if (!photo) {
@@ -100,7 +114,7 @@ export default function AddRecipeForm() {
   return (
     <div className={styles.container}>
       <form onSubmit={formik.handleSubmit} className={styles.form}>
-        {/* Ліва частина з полями */}
+      
         <div className={styles.left}>
           <h1 className={styles.addRecipeTitle}>Add Recipe</h1>
           <p className={styles.generalInformation}>General Information</p>
@@ -206,12 +220,12 @@ export default function AddRecipeForm() {
           </div>
 
           <div className={styles.ingredients}>
-            <label className={styles.label}>Ingredients</label>
+            <label className={styles.ingredientsLabel}>Ingredients</label>
 
             <div className={styles.ingredientsLabelsRow}>
               <span className={styles.labelName}>Name</span>
               <span className={styles.labelAmount}>Amount</span>
-              <span style={{ width: "20px" }}></span> {/* Місце під кнопку видалення */}
+              <span style={{ width: "20px" }}></span>
             </div>
 
             <FieldArray
@@ -220,14 +234,21 @@ export default function AddRecipeForm() {
                 <>
                   {formik.values.ingredients.map((item, index) => (
                     <div key={index} className={styles.ingredientRow}>
-                      <input
+                      <select
                         name={`ingredients.${index}.name`}
                         value={item.name}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        className={styles.ingredientNameInput}
-                        placeholder="Name"
-                      />
+                        className={styles.ingredientNameSelect}
+                      >
+                        <option value="">Select ingredient</option>
+                        {availableIngredients.map((ingr) => (
+                          <option key={ingr} value={ingr}>
+                            {ingr}
+                          </option>
+                        ))}
+                      </select>
+
                       <input
                         name={`ingredients.${index}.amount`}
                         value={item.amount}
@@ -236,6 +257,7 @@ export default function AddRecipeForm() {
                         className={styles.ingredientAmountInput}
                         placeholder="Amount"
                       />
+
                       <button
                         type="button"
                         onClick={() => arrayHelpers.remove(index)}
@@ -248,21 +270,28 @@ export default function AddRecipeForm() {
                   ))}
 
                   <div className={styles.newIngredientInputs}>
-                    <input
+                    <select
                       value={formik.values.newIngredientName}
                       onChange={(e) =>
                         formik.setFieldValue("newIngredientName", e.target.value)
                       }
-                      placeholder="New ingredient name"
                       className={styles.input}
-                    />
+                    >
+                      <option value="">Select ingredient</option>
+                      {availableIngredients.map((ingr) => (
+                        <option key={ingr} value={ingr}>
+                          {ingr}
+                        </option>
+                      ))}
+                    </select>
+
                     <div className={styles.amountAndButton}>
                       <input
                         value={formik.values.newIngredientAmount}
                         onChange={(e) =>
                           formik.setFieldValue("newIngredientAmount", e.target.value)
                         }
-                        placeholder="New ingredient amount"
+                        placeholder="Amount"
                         className={styles.input}
                       />
                       <button
@@ -291,13 +320,14 @@ export default function AddRecipeForm() {
           </div>
 
           <div className={styles.fieldGroup}>
-            <label htmlFor="instruction" className={styles.label}>
+            <label htmlFor="instruction" className={styles.instructionsLabel}>
               Instructions
             </label>
             <textarea
               id="instruction"
               name="instruction"
-              className={styles.textarea}
+              placeholder="Enter a text"
+              className={styles.instructionsTextarea}
               value={formik.values.instruction}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -316,7 +346,6 @@ export default function AddRecipeForm() {
           </button>
         </div>
 
-        {/* Права частина — завантаження фото */}
         <div className={styles.uploadContainer}>
           <label htmlFor="photoInput" className={styles.photoLabel}>
             Upload photo
@@ -357,18 +386,6 @@ export default function AddRecipeForm() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
